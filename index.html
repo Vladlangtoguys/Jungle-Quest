@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jungle Quest</title>
+    <link rel="icon" type="image/png" href="jqlogo.png">
+
+    <style>
+
+        body {
+            background-image: url('homebg.jpg');
+            background-position: center bottom;
+            background-size: cover;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #logo {
+            max-width: 100%; /* Ensure the logo never exceeds the width of its container */
+            height: auto; /* Automatically adjust the height to maintain aspect ratio */
+            margin-bottom: -80px;
+        }
+        #play {
+            padding: 20px 40px;
+            font-size: 18px;
+            background-color: #60c90b;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 50px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 35px;
+            border: none;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .button-container {
+            background-color: #88522e;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            height: 220px;
+            margin: 0 auto; /* Center horizontally */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        #play:hover {
+            background-color: #50a709;
+        }
+        #rules {
+            padding: 10px 20px;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 50px;
+            font-family: Arial, sans-serif;
+            border: none;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        #rules:hover {
+            background-color: #b9b9b9;
+        }
+        .switch-container {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+        }
+        .switch-label {
+            margin-right: 10px;
+            color: white;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #60c90b;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #60c90b;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        #rules-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    
+    <img id="logo" src="jqlogo.png" alt="Logo">
+
+    <div class="button-container">
+        <button id="play" onclick="startGame()">PLAY</button>
+        <button id="rules" onclick="showRules()">RULES</button>
+
+        <div class="switch-container">
+            <label class="switch-label">Music:</label>
+            <label class="switch">
+                <input type="checkbox" onclick="toggleMusic()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <audio id="background-music" src="bg.mp3" loop></audio>
+    <audio id="pop-sf" src="pop.mp3"></audio>
+
+<script>
+    
+    document.getElementById('background-music').volume = 0.8;
+
+    // Function to play background music
+    function playBackgroundMusic() {
+            document.getElementById('background-music').play();
+        }
+
+    // Function to pause background music
+    function pauseBackgroundMusic() {
+        document.getElementById('background-music').pause();
+    }
+
+    // Function to toggle music on/off
+    function toggleMusic() {
+            const music = document.getElementById('background-music');
+            const musicControl = document.querySelector('.switch input');
+
+            if (music.paused) {
+                playBackgroundMusic();
+            } else {
+                pauseBackgroundMusic();
+            }
+        }
+
+        function startGame() {
+            window.location.href = 'junglequest.html';
+        }
+
+        function showRules() {
+            // Display a popup with the rules
+            document.getElementById('pop-sf').play();
+            const rulesPopup = `
+                <div id="rules-popup">
+                    <h2>Game Rules:</h2>
+                    <p style="margin-bottom: 40px;">Embark on an exciting journey in Jungle Quest, where your goal is to answer questions with letters cleverly hidden. Earn points for correct answers, but beware wrong guesses cost a life out of your three. Click on the letters below to form your answers. Need help? Clues can uncover a consonant or vowel, but be cautious you can only use a clue with 25 points. With just three lives and clues, navigate strategically through levels. Clearing levels unlocks tougher game modes. Can you bravely explore the jungle, tackle questions, and conquer all levels? Good luck on your Jungle Quest adventure!</p>
+                    <h3>Gameplay Essentials:</h3>
+                    <li>You start with three lives make each answer count!</li>
+                    <li>Accumulate 25 points or more to use a clue strategically.</li>
+                    <li>You have a total of three clues use them wisely!</li>
+                    <li>Complete levels to unlock more challenging game modes.</li>
+                    <button id="close-rules-button" style="margin-top: 20px; cursor: pointer; padding: 10px 20px; background-color: red; color: white; border: none; border-radius: 4px;" onclick="closeRulesPopup()" onmouseover="this.style.backgroundColor='#9c0000'" onmouseout="this.style.backgroundColor='red'">Close</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', rulesPopup);
+        }
+
+        function closeRulesPopup() {
+            // Close the rules popup
+            const rulesPopup = document.getElementById('rules-popup');
+            if (rulesPopup) {
+                rulesPopup.remove();
+            }
+        }
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jungle Quest</title>
+    <link rel="icon" type="image/png" href="jqlogo.png">
+
+    <style>
+        body {
+            background-image: url('bg.jpg');
+            background-position: center bottom;
+            background-size: cover;
+            background-repeat: no-repeat;
+            width: auto;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #logo {
+            height: 300px;
+            margin-bottom: -80px;
+        }
+        #hangaroo-word {
+            font-size: 24px;
+            width: max-content;
+            margin: 0 auto 10px auto;
+            padding: 10px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            white-space: pre;
+        }
+        #clue-button {
+            margin-top: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        #mode-level {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        #question {
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 30px;
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+        #score {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+        #life {
+            margin-top: 10px;
+            font-size: 18px;
+            color: red;
+        }
+        .keyboard-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 0 5%;
+            box-sizing: border-box;
+            justify-content: space-around;
+        }
+        .keyboard-box {
+            border: none;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        .keyboard-row button {
+            padding: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 10%;
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffffff;
+            margin: 0 2px;
+        }
+        .keyboard-row button:hover {
+            background-color: #b3b3b3;
+        }
+        @media only screen and (max-width: 600px) {
+            .keyboard-row button {
+                width: 10%;
+            }
+        }
+        #clue-options {
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #clue-button:hover {
+            background-color: #347c37;
+        }
+        .keyboard-container.wiggle {
+            animation: wiggle 0.3s;
+        }
+        @keyframes wiggle {
+            0% { transform: scale(0.98) rotate(-2deg); }
+            50% { transform: scale(0.98) rotate(2deg); }
+            100% { transform: scale(0.98) rotate(-2deg); }
+        }
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: 1px 0;
+        }
+        #ml {
+            background-color: #88522e;
+            height: max-content;
+            width: max-content;
+            margin-right: 20px;
+            max-width: 100px;
+            flex: 1;
+            margin-top: 50px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        #slc {
+            background-color: #88522e;
+            height: max-content;
+            width: max-content;
+            margin-left: 20px;
+            max-width: 100px;
+            flex: 1;
+            margin-top: 50px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        #mode {
+            background-color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #level {
+            background-color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #current-score {
+            background-color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #life-count {
+            background-color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #clue-count {
+            background-color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        /*Music*/
+        .switch-container {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+            margin-top: -7px;
+            margin-bottom: 0px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #60c90b;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #60c90b;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        #restart {
+            margin-top: 10px;
+            margin-right: 25px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #e2df17;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        #restart:hover {
+            background-color: #aaa811;
+        }
+        #exit {
+            margin-top: 10px;
+            margin-left: 25px;
+            cursor: pointer;
+            padding: 5px 25px;
+            background-color: #f31818;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        #exit:hover {
+            background-color: #a71010;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="welcome-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+        <img src="monkey1.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+        <h2>Welcome to Jungle Quest!</h2>
+        <p>Ooh-ooh-ah-ah! Welcome to Jungle Quest, adventurer! Answer questions, earn points, but watch out for wrong guesses they cost a life! Use clues wisely for 25 points for a maximum of 3. Clear levels to unlock tougher challenges. Good luck!</p>
+        <button style="margin-top: 20px; margin-bottom: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="closeWelcomePopup()" onmouseover="this.style.backgroundColor='#347c37'" onmouseout="this.style.backgroundColor='#4CAF50'">Start Game</button>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1000px; margin: 0 auto;">
+
+        <div id="slc" style="flex: 1; max-width: 100px; box-sizing: border-box;">
+            <p style="color: white; font-weight: bold;">Score:</p>
+            <div id="current-score" style="font-weight: bold;"></div>
+            <p style="color: white; font-weight: bold;">Life:</p>
+            <div id="life-count" style="color: red; font-weight: bold;"></div>
+            <p style="color: white; font-weight: bold;">Clue:</p>
+            <div id="clue-count" style="font-weight: bold;"></div>
+        </div>
+    
+        <div id="jq" style="flex: 1; max-width: 33.33%; box-sizing: border-box; margin: 0 10px;">
+            <img id="logo" src="jqlogo.png" alt="Logo" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+        </div>
+    
+        <div id="ml" style="flex: 1; max-width: 100px; width: 100%; box-sizing: border-box;">
+            <p style="color: white; font-weight: bold;">Mode:</p>
+            <div id="mode" style="font-weight: bold;"></div>
+            <p style="color: white; font-weight: bold;">Level:</p>
+            <div id="level" style="font-weight: bold;"></div>
+            <p style="color: white; font-weight: bold;">Music:</p>
+            <div class="switch-container">
+                <label class="switch">
+                    <input type="checkbox" onclick="toggleMusic()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    
+    </div>
+
+    <div id="question" style="font-weight: bold;"></div>
+    <div id="hangaroo-word"></div>
+    <button id="clue-button" onclick="useClue()">Use Clue</button>
+
+    <div class="keyboard-container">
+        <div class="keyboard-box" style="background-color: #88522e; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);">
+            <div class="keyboard-row">
+                <button onclick="makeGuess(event)">A</button>
+                <button onclick="makeGuess(event)">B</button>
+                <button onclick="makeGuess(event)">C</button>
+                <button onclick="makeGuess(event)">D</button>
+                <button onclick="makeGuess(event)">E</button>
+                <button onclick="makeGuess(event)">F</button>
+                <button onclick="makeGuess(event)">G</button>
+                <button onclick="makeGuess(event)">H</button>
+                <button onclick="makeGuess(event)">I</button>
+                <button onclick="makeGuess(event)">J</button>
+                <button onclick="makeGuess(event)">K</button>
+                <button onclick="makeGuess(event)">L</button>
+                <button onclick="makeGuess(event)">M</button>
+            </div>
+            <div class="keyboard-row">
+                <button onclick="makeGuess(event)">N</button>
+                <button onclick="makeGuess(event)">O</button>
+                <button onclick="makeGuess(event)">P</button>
+                <button onclick="makeGuess(event)">Q</button>
+                <button onclick="makeGuess(event)">R</button>
+                <button onclick="makeGuess(event)">S</button>
+                <button onclick="makeGuess(event)">T</button>
+                <button onclick="makeGuess(event)">U</button>
+                <button onclick="makeGuess(event)">V</button>
+                <button onclick="makeGuess(event)">W</button>
+                <button onclick="makeGuess(event)">X</button>
+                <button onclick="makeGuess(event)">Y</button>
+                <button onclick="makeGuess(event)">Z</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button id="restart" onclick="playAgain()">RESTART</button>
+        <button id="exit" onclick="exitToHomepage()">EXIT</button>
+    </div>
+
+    <footer style="text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);">
+        <h2>Group Members</h2>
+        <p>Vladimir Leyson, Eian Etom, John Ello Pineda, Joshua Pre, Joshua Rualiso</p>
+    </footer>
+    
+    <audio id="background-music" src="bg.mp3" loop></audio>
+    <audio id="correct-sound" src="correct.mp3"></audio>
+    <audio id="wrong-sound" src="wrong.mp3"></audio>
+    <audio id="magic-sound" src="magic.mp3"></audio>
+    <audio id="level-sound" src="level.mp3"></audio>
+    <audio id="levelup-sound" src="levelup.mp3"></audio>
+    <audio id="loser-sound" src="loser.mp3"></audio>
+    <audio id="winner-sound" src="winner.mp3"></audio>
+    <audio id="pop-sf" src="pop.mp3"></audio>
+
+    <script>
+
+        function closeWelcomePopup() {
+            document.getElementById('welcome-popup').style.display = 'none';
+        }
+
+        // Function to play background music
+            function playBackgroundMusic() {
+                document.getElementById('background-music').play();
+        }
+
+        // Function to pause background music
+            function pauseBackgroundMusic() {
+                document.getElementById('background-music').pause();
+        }
+
+        // Function to toggle music on/off
+        function toggleMusic() {
+                const music = document.getElementById('background-music');
+                const musicControl = document.querySelector('.switch input');
+
+                if (music.paused) {
+                    playBackgroundMusic();
+                } else {
+                    pauseBackgroundMusic();
+                }
+        }
+
+        document.getElementById('background-music').volume = 0.5;
+
+        const questions = {
+            easy: [
+                { 
+                    question: "What is the capital city of France?", 
+                    answer: "PARIS", 
+                    trivia: "Paris is also known as the City of Love and is famous for its iconic landmarks like the Eiffel Tower and the Louvre Museum." 
+                },
+                { 
+                    question: "Which planet is known as the Red Planet?", 
+                    answer: "MARS", 
+                    trivia: "Mars is often called the Red Planet due to its reddish appearance caused by iron oxide on its surface." 
+                },
+                { 
+                    question: "What is the largest mammal in the world?", 
+                    answer: "BLUE WHALE", 
+                    trivia: "The blue whale is the largest mammal on Earth, growing up to 100 feet in length and weighing as much as 200 tons." 
+                },
+                { 
+                    question: "What Netflix show had the most streaming views in 2021?", 
+                    answer: "SQUID GAME", 
+                    trivia: "Squid Game became the most-watched Netflix series of all time in 2021, garnering over 142 million views in its first month of release." 
+                },
+                { 
+                    question: "What is the primary language spoken in Japan?", 
+                    answer: "JAPANESE", 
+                    trivia: "Japanese is the official and primary language spoken in Japan, with over 125 million native speakers." 
+                },
+                { 
+                    question: "What is the currency of the United Kingdom?", 
+                    answer: "BRITISH POUND", 
+                    trivia: "The currency of the United Kingdom is the British Pound, often symbolized as £ or GBP." 
+                },
+                { 
+                    question: "Who wrote the play Romeo and Juliet?", 
+                    answer: "WILLIAM SHAKESPEARE", 
+                    trivia: "Romeo and Juliet is a tragedy written by William Shakespeare, one of his most famous and enduring plays." 
+                },
+                { 
+                    question: "What is the chemical symbol for gold?", 
+                    answer: "AU", 
+                    trivia: "Gold's chemical symbol is Au, which comes from the Latin word 'aurum' meaning 'shining dawn'." 
+                },
+                { 
+                    question: "Which ocean is the largest on Earth?", 
+                    answer: "PACIFIC OCEAN", 
+                    trivia: "The Pacific Ocean is the largest ocean on Earth, covering more than 60 million square miles." 
+                },
+                { 
+                    question: "What is the capital city of Australia?", 
+                    answer: "CANBERRA", 
+                    trivia: "Canberra is the capital city of Australia, located in the Australian Capital Territory (ACT)." 
+                }
+            ],
+            difficult: [
+                { 
+                    question: "What is the term for a programming paradigm that treats computation as the evaluation of mathematical functions?", 
+                    answer: "FUNCTIONAL", 
+                    trivia: "Functional programming emphasizes the use of mathematical functions to solve problems and avoids changing state and mutable data." 
+                },
+                { 
+                    question: "What is the process of converting human-readable code into an intermediate code that can be executed by a virtual machine?", 
+                    answer: "COMPILATION", 
+                    trivia: "Compilation is the process of translating high-level programming languages into machine code that can be executed by a computer's CPU." 
+                },
+                { 
+                    question: "What is the practice of writing code that is easy to understand, modify, and maintain?", 
+                    answer: "READABILITY", 
+                    trivia: "Code readability refers to the ease with which code can be understood, modified, and maintained by developers, enhancing software quality and reducing bugs." 
+                },
+                { 
+                    question: "What is the term for a program that replicates itself and spreads to other computers?", 
+                    answer: "VIRUS", 
+                    trivia: "A virus is a type of malicious software that can replicate itself and spread to other computers, often causing damage to systems or stealing data." 
+                },
+                { 
+                    question: "What is the technology that enables a device to communicate wirelessly over short distances?", 
+                    answer: "BLUETOOTH", 
+                    trivia: "Bluetooth is a wireless technology standard used for short-range communication between devices, such as smartphones, computers, and peripherals." 
+                },
+                { 
+                    question: "What is the practice of managing and analyzing large datasets to extract valuable insights?", 
+                    answer: "BIG DATA", 
+                    trivia: "Big data refers to the large volume of structured and unstructured data that inundates businesses on a day-to-day basis and the methodologies used to analyze and derive insights from it." 
+                },
+                { 
+                    question: "What is the method of protecting data by converting it into an unreadable format using an algorithm?", 
+                    answer: "ENCRYPTION", 
+                    trivia: "Encryption is the process of encoding information in such a way that only authorized parties can access it, ensuring data confidentiality and security." 
+                },
+                { 
+                    question: "What is the practice of designing software systems that can adapt and evolve over time?", 
+                    answer: "AGILE", 
+                    trivia: "Agile software development is an iterative and flexible approach to designing and building software systems that emphasizes adaptability, collaboration, and customer feedback." 
+                },
+                { 
+                    question: "What is the term for a malicious software designed to block access to a computer system until a sum of money is paid?", 
+                    answer: "RANSOMWARE", 
+                    trivia: "Ransomware is a type of malware that encrypts or locks users out of their systems or files and demands a ransom payment in exchange for restoring access." 
+                },
+                { 
+                    question: "What is the term for a type of programming error that causes unexpected behavior or crashes?", 
+                    answer: "BUG", 
+                    trivia: "A bug is a programming error that causes unexpected behavior, crashes, or unintended results in software applications." 
+                }
+            ],
+            expert: [
+                { 
+                    question: "What's the primary purpose of the HTTP protocol?", 
+                    answer: "COMMUNICATION", 
+                    trivia: "HTTP stands for Hypertext Transfer Protocol and is primarily used for communication between web servers and clients, facilitating the transfer of hypertext documents." 
+                },
+                { 
+                    question: "Name the data structure that follows the Last In, First Out (LIFO) principle.", 
+                    answer: "STACK", 
+                    trivia: "A stack is a data structure that follows the Last In, First Out (LIFO) principle, where the last element added to the stack is the first one to be removed." 
+                },
+                { 
+                    question: "Identify the lightweight, JavaScript-based front-end framework.", 
+                    answer: "REACT", 
+                    trivia: "React is a popular open-source JavaScript library developed by Facebook for building user interfaces, known for its declarative and component-based approach." 
+                },
+                { 
+                    question: "Which sorting algorithm has an average and worst-case time complexity of O(n log n)?", 
+                    answer: "MERGE SORT", 
+                    trivia: "Merge sort is a sorting algorithm with an average and worst-case time complexity of O(n log n), making it efficient for sorting large datasets." 
+                },
+                { 
+                    question: "Which Linux command is used to search for the occurrence of a text pattern in files?", 
+                    answer: "GREP", 
+                    trivia: "grep is a command-line utility for searching plain-text data sets for lines that match a regular expression, commonly used in Unix and Unix-like operating systems." 
+                },
+                { 
+                    question: "What is the term for a design pattern that restricts the instantiation of a class to one single instance?", 
+                    answer: "SINGLETON", 
+                    trivia: "The singleton pattern is a design pattern that restricts the instantiation of a class to one single instance and provides global access to that instance." 
+                },
+                { 
+                    question: "What is the term for a malicious software that disguises itself as legitimate software?", 
+                    answer: "TROJAN", 
+                    trivia: "A Trojan is a type of malware that disguises itself as legitimate software to trick users into downloading and executing malicious code, often leading to unauthorized access or data theft." 
+                },
+                { 
+                    question: "What's the term for a method that allows a class to inherit from multiple classes?", 
+                    answer: "MULTIPLE INHERITANCE", 
+                    trivia: "Multiple inheritance is a feature of some object-oriented programming languages that allows a class to inherit properties and behaviors from more than one parent class." 
+                },
+                { 
+                    question: "Identify the widely used version control system.", 
+                    answer: "GIT", 
+                    trivia: "Git is a widely used distributed version control system for tracking changes in source code during software development, known for its speed, flexibility, and collaboration features." 
+                },
+                { 
+                    question: "What term is used for a network of remote servers hosted on the internet to store, manage, and process data?", 
+                    answer: "CLOUD", 
+                    trivia: "Cloud computing refers to the delivery of computing services—including servers, storage, databases, networking, software, analytics, and intelligence—over the Internet ('the cloud') to offer faster innovation, flexible resources, and economies of scale." 
+                }
+            ]
+        };
+
+        let currentLevel = "easy";
+        let currentQuestionIndex = 0;
+        let questionsOrder = [];
+        let currentQuestion = {};
+        let guessedWord = [];
+        let incorrectGuesses = 0;
+        let score = 0;
+        let cluesRemaining = 3;
+        let lives = 3;
+
+        function startGame(level) {
+            currentLevel = level;
+            if (currentQuestionIndex === 0) {
+                currentQuestionIndex = 0;
+                score = 0;
+                cluesRemaining = 3;
+                lives = 3;
+            }
+            shuffleQuestions();
+            startLevel();
+        }
+
+        function shuffleQuestions() {
+            questionsOrder = questions[currentLevel].slice(); // Copy the array
+            for (let i = questionsOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questionsOrder[i], questionsOrder[j]] = [questionsOrder[j], questionsOrder[i]];
+            }
+        }
+
+        function startLevel() {
+            currentQuestion = questionsOrder[currentQuestionIndex];
+            guessedWord = currentQuestion.answer.split('').map(char => (char === ' ' ? ' ' : '_'));
+            incorrectGuesses = 0;
+            updateDisplay();
+
+            // Enable all buttons
+            const buttons = document.querySelectorAll('.keyboard-row button');
+            buttons.forEach(button => {
+                button.disabled = false;
+                button.style.backgroundColor = "";
+            });
+        }
+
+        function makeGuess(event) {
+            if (event.target.tagName === 'BUTTON') {
+                const letter = event.target.textContent.toLowerCase();
+                let found = false;
+                for (let i = 0; i < currentQuestion.answer.length; i++) {
+                    if (currentQuestion.answer[i].toLowerCase() === letter) {
+                        guessedWord[i] = currentQuestion.answer[i];
+                        found = true;
+                        document.getElementById('correct-sound').play(); // Play correct sound here
+                    }
+                }
+                if (!found) {
+                    document.getElementById('wrong-sound').play(); // Play wrong sound here
+                    const keyboardContainer = document.querySelector('.keyboard-container');
+                    if (!keyboardContainer.classList.contains('wiggle')) {
+                        keyboardContainer.classList.add('wiggle'); // Add wiggle animation class only if it's not already added
+                        setTimeout(() => keyboardContainer.classList.remove('wiggle'), 500); // Remove the wiggle class after 500ms
+                        lives--; // Decrement lives only once per wrong guess
+                        if (lives === 0) {
+                            document.getElementById('background-music').muted = true; // Mute bg music
+                            document.getElementById('loser-sound').play(); // Play loser sound
+                            setTimeout(function() {
+                                endGame();
+                            }, 10);
+                            return;
+                        }
+                    }
+                }
+                event.target.disabled = true;
+                event.target.style.backgroundColor = "#88522e";
+                updateDisplay();
+                checkLevelCompletion();
+            }
+        }
+
+        function updateDisplay() {
+            const hangarooWordDisplay = guessedWord.join(' ');
+            document.getElementById('hangaroo-word').textContent = hangarooWordDisplay;
+            document.getElementById('current-score').textContent = score;
+            document.getElementById('life-count').textContent = lives;
+            document.getElementById('question').textContent = currentQuestion.question;
+            document.getElementById('mode').textContent = `${currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1)}`;
+            document.getElementById('level').textContent = `${currentQuestionIndex + 1}`;
+            document.getElementById('clue-count').textContent = cluesRemaining;
+        }
+
+        function useClue() {
+            if (cluesRemaining > 0) {
+                // Check if player points for a clue
+                if (score >= 25) {
+                    document.getElementById('pop-sf').play();
+                    const clueOptionsPopup = `
+                        <div id="clue-options-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 50px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                            <div style="position: absolute; top: 10px; right: 10px; cursor: pointer;" onclick="closePopup('clue-options-popup')">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47 2 2 6.47 2 12C2 17.53 6.47 22 12 22C17.53 22 22 17.53 22 12C22 6.47 17.53 2 12 2ZM13.41 12L17.71 16.29L16.29 17.71L12 13.41L7.71 17.71L6.29 16.29L10.59 12L6.29 7.71L7.71 6.29L12 10.59L16.29 6.29L17.71 7.71L13.41 12Z" fill="#333333"/>
+                                </svg>
+                            </div>
+                            <h3 style="margin-top: 20px; margin-bottom: 20px;">Choose a Clue:</h3>
+                            <button onclick="revealConsonant()" style="background-color: #007bff; color: white; border: none; border-radius: 4px; padding: 10px; cursor: pointer;" onmouseover="this.style.backgroundColor='#0255ad'" onmouseout="this.style.backgroundColor='#007bff'">Consonant</button>
+                            <button onclick="revealVowel()" style="background-color: #007bff; color: white; border: none; border-radius: 4px; padding: 10px; cursor: pointer;" onmouseover="this.style.backgroundColor='#0255ad'" onmouseout="this.style.backgroundColor='#007bff'">Vowel</button>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', clueOptionsPopup);
+                } else {
+                    document.getElementById('pop-sf').play();
+                    const notEnoughPointsPopup = `
+                        <div id="not-enough-points-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                            <img src="monkey4.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+                            <h3>Insufficient Points!</h3>
+                            <p>You need 25 points to use a clue.</p>
+                            <button id="ok-button" style="margin-top: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="closePopup('not-enough-points-popup')">OK</button>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', notEnoughPointsPopup);
+                }
+            } else {
+                document.getElementById('pop-sf').play();
+                const noCluesRemainingPopup = `
+                    <div id="no-clues-remaining-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                        <img src="monkey6.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+                        <h3>No More Clues!</h3>
+                        <p>Sorry adventurer clues are sold out.</p>
+                        <button id="ok-button" style="margin-top: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="closePopup('no-clues-remaining-popup')">OK</button>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', noCluesRemainingPopup);
+            }
+        }
+
+        function closePopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.parentNode.removeChild(popup);
+            }
+        }
+
+        function revealConsonant() {
+            const consonants = 'bcdfghjklmnpqrstvwxyz';
+            let foundConsonantIndex = -1; // Variable to store the index of the found consonant
+            for (let i = 0; i < currentQuestion.answer.length; i++) {
+                const char = currentQuestion.answer[i].toLowerCase();
+                if (consonants.includes(char) && guessedWord[i] === '_') {
+                    // If the character is a consonant and hasn't been guessed yet
+                    foundConsonantIndex = i; // Store the index of the found consonant
+                    break; // Exit loop after finding the first consonant
+                }
+            }
+
+            if (foundConsonantIndex !== -1) {
+                const foundConsonant = currentQuestion.answer[foundConsonantIndex];
+                // Reveal all occurrences of the found consonant
+                for (let i = 0; i < currentQuestion.answer.length; i++) {
+                    if (currentQuestion.answer[i].toLowerCase() === foundConsonant.toLowerCase()) {
+                        guessedWord[i] = currentQuestion.answer[i];
+                        // Disable the corresponding letter button
+                        const buttonIndex = currentQuestion.answer.charCodeAt(i) - 65; // Convert ASCII to button index
+                        const button = document.querySelectorAll('.keyboard-row button')[buttonIndex];
+                        button.disabled = true;
+                        button.style.backgroundColor = "#88522e"; // Set background color
+                    }
+                }
+
+                // Deduct points and reduce clue count
+                score -= 25;
+                cluesRemaining--;
+
+                updateDisplay();
+                checkLevelCompletion();
+                document.getElementById('magic-sound').play(); // Play magic sound
+            } else {
+                document.getElementById('pop-sf').play();
+                const noCluesRemainingPopup = `
+                    <div id="no-clues-remaining-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                        <img src="monkey5.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+                        <h3>Oo-Oo-ah-ah!</h3>
+                        <p>No more clues available for consonants!</p>
+                        <button id="ok-button" style="margin-top: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="closePopup('no-clues-remaining-popup')">OK</button>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', noCluesRemainingPopup);
+            }
+
+            // Clear clue options
+            closePopup('clue-options-popup');
+        }
+
+        function revealVowel() {
+            const vowel = 'aeiou';
+            let foundVowelIndex = -1; // Variable to store the index of the found vowel
+            for (let i = 0; i < currentQuestion.answer.length; i++) {
+                const char = currentQuestion.answer[i].toLowerCase();
+                if (vowel.includes(char) && guessedWord[i] === '_') {
+                    // If the character is a vowel and hasn't been guessed yet
+                    foundVowelIndex = i; // Store the index of the found vowel
+                    break; // Exit loop after finding the first vowel
+                }
+            }
+
+            if (foundVowelIndex !== -1) {
+                const foundVowel = currentQuestion.answer[foundVowelIndex];
+                // Reveal all occurrences of the found vowel
+                for (let i = 0; i < currentQuestion.answer.length; i++) {
+                    if (currentQuestion.answer[i].toLowerCase() === foundVowel.toLowerCase()) {
+                        guessedWord[i] = currentQuestion.answer[i];
+                        // Disable the corresponding letter button
+                        const buttonIndex = currentQuestion.answer.charCodeAt(i) - 65; // Convert ASCII to button index
+                        const button = document.querySelectorAll('.keyboard-row button')[buttonIndex];
+                        button.disabled = true;
+                        button.style.backgroundColor = "#88522e"; // Set background color
+                    }
+                }
+
+                // Deduct 25 points and reduce clue count
+                score -= 25;
+                cluesRemaining--;
+
+                updateDisplay();
+                checkLevelCompletion();
+                document.getElementById('magic-sound').play(); // Play magic sound
+            } else {
+                document.getElementById('pop-sf').play();
+                const noCluesRemainingPopup = `
+                    <div id="no-clues-remaining-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                        <img src="monkey5.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+                        <h3>Oo-Oo-ah-ah!</h3>
+                        <p>No more clues available for vowels!</p>
+                        <button id="ok-button" style="margin-top: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="closePopup('no-clues-remaining-popup')">OK</button>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', noCluesRemainingPopup);
+            }
+
+            // Clear clue options
+            closePopup('clue-options-popup');
+        }
+
+        function displayTrivia() {
+            // Display a popup with the correct answer and a short trivia
+            const triviaPopup = `
+                <div id="trivia-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                    <h3>Correct Answer:</h3>
+                    <p>${currentQuestion.answer}</p>
+                    <h3>Trivia:</h3>
+                    <p>Did you know? ${currentQuestion.trivia}</p>
+                    <button style="margin-top: 20px; margin-bottom: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="closeTriviaPopup()">Next Level</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', triviaPopup);
+        }
+
+        function closeTriviaPopup() {
+            // Remove the trivia popup from the DOM
+            const triviaPopup = document.getElementById('trivia-popup');
+            if (triviaPopup) {
+                triviaPopup.remove();
+                startLevel(); // Proceed to the next level
+            }
+        }
+
+        function displayModeCompletionPopup() {
+            const modeCompletionPopup = `
+                <div id="mode-completion-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                    <h3>Correct Answer:</h3>
+                    <p>${currentQuestion.answer}</p>
+                    <h3>Trivia:</h3>
+                    <p>Did you know? ${currentQuestion.trivia}</p>
+                    <h3 style="margin-top: 40px;">Congratulations!</h3>
+                    <p>You completed the ${currentLevel} mode!</p>
+                    <p>Do you want to proceed to the next mode?</p>
+                    <button id="next-mode-button" style="margin-top: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="proceedToNextMode()">Yes, next mode</button>
+                    <button id="exit-game-button" style="margin-top: 20px; margin-bottom: 20px; cursor: pointer; padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 4px; margin-left: 10px;" onclick="exitGame()">No, exit game</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modeCompletionPopup);
+        }
+
+        function proceedToNextMode() {
+            const modeCompletionPopup = document.getElementById('mode-completion-popup');
+            if (modeCompletionPopup) {
+                modeCompletionPopup.remove();
+            }
+        }
+
+        function exitGame() {
+            window.location.href = 'index.html';
+        }
+
+        function checkLevelCompletion() {
+            if (guessedWord.join('') === currentQuestion.answer) {
+                score += 10;
+                currentQuestionIndex++;
+                closePopup('clue-options-popup');
+                if (currentQuestionIndex < 10) {
+                    document.getElementById('level-sound').play(); // Play level sound
+                    displayTrivia(); // Display trivia before moving to the next level
+                } else {
+                    // Move to the next level
+                    switch (currentLevel) {
+                        case "easy":
+                            displayModeCompletionPopup();
+                            currentLevel = "difficult";
+                            document.getElementById('levelup-sound').play(); // Play level up sound
+                            break;
+                        case "difficult":
+                            displayModeCompletionPopup();
+                            currentLevel = "expert";
+                            document.getElementById('levelup-sound').play(); // Play level up sound
+                            break;
+                        case "expert":
+                            // The player completed all levels
+                            document.getElementById('background-music').muted = true; // Mute bg music
+                            document.getElementById('winner-sound').play(); // Play winner sound
+                            displayGameCompletionPopup();
+                            break;
+                    }
+                    currentQuestionIndex = 0;
+                    shuffleQuestions();
+                    startLevel();
+                }
+            }
+        }
+
+        function displayGameCompletionPopup() {
+            // Display a popup indicating completion of all levels
+            const gameCompletionPopup = `
+                <div id="game-completion-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                    <img src="monkey3.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+                    <h2>Congratulations!</h2>
+                    <h4>Correct Answer:</h4>
+                    <p>${currentQuestion.answer}</p>
+                    <p>You completed all levels!</p>
+                    <p>Final Score: ${score}</p>
+                    <button style="margin-top: 20px; margin-bottom: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="navigateToHomepage()">Return to Homepage</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', gameCompletionPopup);
+        }
+
+        function navigateToHomepage() {
+            // Navigate to index.html
+            window.location.href = 'index.html';
+        }
+
+        function endGame() {
+            const endGamePopup = `
+                <div id="end-game-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 1); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); text-align: center;">
+                    <img src="monkey2.png" alt="Logo" style="height: 100px; margin-bottom: -10px; margin-top: 10px;">
+                    <h3>Game Over!</h3>
+                    <h4>Correct Answer:</h4>
+                    <p>${currentQuestion.answer}</p>
+                    <p>Final Score: ${score}</p>
+                    <p>Oops! You didn't quite make it this time. Keep trying, you're getting closer!</p>
+                    <button id="play-again-button" style="margin-top: 20px; cursor: pointer; padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px;" onclick="playAgain()">Retry</button>
+                    <button id="exit-to-homepage-button" style="margin-top: 20px; margin-bottom: 20px; cursor: pointer; padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 4px; margin-left: 10px;" onclick="exitToHomepage()">Exit</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', endGamePopup);
+        }
+
+        function playAgain() {
+            location.reload();
+        }
+
+        function exitToHomepage() {
+            window.location.href = 'index.html';
+        }
+        
+        startGame("easy");
+
+    </script>
+</body>
+
+</html>
